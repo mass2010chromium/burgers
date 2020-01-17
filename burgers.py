@@ -26,7 +26,7 @@ from mpl_toolkits.mplot3d import Axes3D
 def simulate(end_time, timesteps, xs, initial, left, right):
     space_steps = len(initial)
     dt = end_time / timesteps
-    results = np.zeros((timesteps, space_steps))
+    results = np.zeros((timesteps, space_steps), dtype=np.float32)
     results[0] = initial
     # TODO: kinda jank but I guess its actually ok
     dxs = np.array([xs[i] - xs[i - 1] for i in range(1, space_steps)])
@@ -109,6 +109,7 @@ def run_many_and_save(num_runs, dest_file, save_full=False):
     t_steps = 800
     end_t = 3
     results_list = []
+    results_labels = []
     successes = 0
     for i in range(num_runs):
         if i % 100 == 0:
@@ -120,9 +121,13 @@ def run_many_and_save(num_runs, dest_file, save_full=False):
         if (save_full):
             results_list.append((results[0], results, success))
         else:
-            results_list.append((results[0], success))
+            results_list.append(results[0])
+            results_labels.append(success)
     results_array = np.array(results_list)
     np.save(dest_file, results_array)    
+    if not save_full:
+        labels_array = np.array(results_labels)
+        np.save(dest_file + "_labels", labels_array)
     print("done!")
     print("Successes: {}, runs: {}".format(successes, num_runs))
 
@@ -136,12 +141,13 @@ def run_many_and_save(num_runs, dest_file, save_full=False):
 # In[ ]:
 
 
-run_many_and_save(10000, "burgers_50k-1.npy")
-run_many_and_save(10000, "burgers_50k-2.npy")
-run_many_and_save(10000, "burgers_50k-3.npy")
-run_many_and_save(10000, "burgers_50k-4.npy")
-run_many_and_save(10000, "burgers_50k-5.npy")
+# run_many_and_save(10000, "burgers_50k-1.npy")
+# run_many_and_save(10000, "burgers_50k-2.npy")
+# run_many_and_save(10000, "burgers_50k-3.npy")
+# run_many_and_save(10000, "burgers_50k-4.npy")
+# run_many_and_save(10000, "burgers_50k-5.npy")
 
+run_many_and_save(10000, "burgers_testing_only.npy")
 
 # In[ ]:
 
